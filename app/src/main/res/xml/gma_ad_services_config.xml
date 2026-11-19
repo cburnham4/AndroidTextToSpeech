@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Minimal Ad Services config to satisfy manifest merger for play-services-ads. -->
+<ad-services-config>
+    <ads-sdk-id>com.google.android.gms.ads</ads-sdk-id>
+</ad-services-config>

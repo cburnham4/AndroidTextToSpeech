@@ -1,102 +1,121 @@
 package letshangllc.texttospeech;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-import android.speech.tts.TextToSpeech;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.android.gms.ads.MobileAds;
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
-import java.util.HashMap;
 import java.util.Locale;
+import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
-    private String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private TextToSpeech textToSpeech;
-
     private AdsHelper adsHelper;
+    private Timer adRefreshTimer;
 
-    private Toolbar toolbar;
+    private EditText etCategory;
 
-    private EditText et_category;
-
-    private Button btn_post_message;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        MobileAds.initialize(this, "ca-app-pub-8223005482588566~7051735934");
+        View root = findViewById(R.id.root_layout);
+        ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle(getString(R.string.app_name));
 
-        this.setTitle(getResources().getString(R.string.app_name));
-
-        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status == TextToSpeech.ERROR){
-                    Log.e(TAG, "ERROR");
-                }
-                textToSpeech.setLanguage(Locale.ENGLISH);
-                textToSpeech.setSpeechRate(.83f);
+        textToSpeech = new TextToSpeech(this, status -> {
+            if (status == TextToSpeech.ERROR) {
+                Log.e(TAG, "TextToSpeech init ERROR");
+                return;
             }
+            textToSpeech.setLanguage(Locale.ENGLISH);
+            textToSpeech.setSpeechRate(0.83f);
         });
 
-        et_category = (EditText) findViewById(R.id.et_category);
-        btn_post_message = (Button) findViewById(R.id.btn_post_message);
-
-
-        btn_post_message.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String category = et_category.getText().toString();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ttsGreater21(category);
-                } else {
-                    ttsUnder20(category);
-                }
-
-            }
+        etCategory = findViewById(R.id.et_category);
+        Button btnPostMessage = findViewById(R.id.btn_post_message);
+        btnPostMessage.setOnClickListener(view -> {
+            String text = etCategory.getText().toString();
+            speak(text);
         });
 
-        adsHelper = new AdsHelper(this.getWindow().getDecorView(), getResources().getString(R.string.admob_id),this);
+        adsHelper = new AdsHelper(
+                getWindow().getDecorView(),
+                getString(R.string.admob_id),
+                this
+        );
         adsHelper.setUpAds();
-        int delay = 1000; // delay for 1 sec.
+
+        int delay = 1000;
         int period = getResources().getInteger(R.integer.ad_refresh_rate);
-        java.util.Timer timer = new java.util.Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        adRefreshTimer = new Timer();
+        adRefreshTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
             public void run() {
-                adsHelper.refreshAd();  // display the data
+                adsHelper.refreshAd();
             }
         }, delay, period);
-
-
-       // textToSpeech.speak("HELLO THIS IS A TEST MESSAGE", TextToSpeech.QUEUE_FLUSH, null);
-
-
-
     }
 
-    @SuppressWarnings("deprecation")
-    private void ttsUnder20(String text) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "MessageId");
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, map);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void ttsGreater21(String text) {
-        String utteranceId=this.hashCode() + "";
+    private void speak(String text) {
+        if (textToSpeech == null) {
+            return;
+        }
+        String utteranceId = Integer.toString(hashCode());
         textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (adsHelper != null) {
+            adsHelper.onPause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adsHelper != null) {
+            adsHelper.onResume();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (adRefreshTimer != null) {
+            adRefreshTimer.cancel();
+            adRefreshTimer = null;
+        }
+        if (adsHelper != null) {
+            adsHelper.onDestroy();
+        }
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+            textToSpeech = null;
+        }
+        super.onDestroy();
     }
 }

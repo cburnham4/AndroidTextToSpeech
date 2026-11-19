@@ -1,4 +1,3 @@
-
 *.iml
 .gradle
 /local.properties
@@ -52,11 +51,13 @@ captures/
 .idea/dictionaries
 .idea/libraries
 
-# Keystore files
+# Keystore files / signing secrets (do not commit)
 *.jks
+*.keystore
+keystore.properties
 
-# External native build folder generated in Android Studio 2.2 and later
-.externalNativeBuild
+# Kotlin
+.kotlin/
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
@@ -65,3 +66,6 @@ google-services.json
 freeline.py
 freeline/
 freeline_project_description.json
+
+# External native build folder generated in Android Studio 2.2 and later
+.externalNativeBuild

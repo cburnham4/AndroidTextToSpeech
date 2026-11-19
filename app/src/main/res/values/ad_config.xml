@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PRODUCTION AdMob configuration for Text To Speech
+    Publisher ID: pub-8223005482588566
+
+    App ID recovered from AndroidManifest.xml (committed).
+    Banner unit ID recovered from the previously committed release APK
+    (legacy strings.xml / integers.xml remain gitignored).
+
+    Debug builds override these with Google's official test IDs via
+    app/src/debug/res/values/ad_config.xml
+
+    TODO (owner): Confirm these unit IDs still exist in AdMob console
+    before shipping a Play release. If units were deleted, create new
+    ones under publisher ca-app-pub-8223005482588566 and update below.
+-->
+<resources>
+    <!-- AdMob Application ID -->
+    <string name="admob_app_id">ca-app-pub-8223005482588566~7051735934</string>
+
+    <!-- MainActivity adaptive banner -->
+    <string name="admob_banner_unit_id">ca-app-pub-8223005482588566/8528469130</string>
+
+    <!-- Legacy alias used by MainActivity -->
+    <string name="admob_id">@string/admob_banner_unit_id</string>
+
+    <!-- Amazon Ads removed (HTTP / Play policy). Kept as unused stub. -->
+    <string name="amazon_ad_id" translatable="false">REMOVED</string>
+</resources>

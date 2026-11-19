@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    App-facing strings that must be committed (legacy strings.xml is gitignored
+    because it previously held ad keys). Ad IDs live in ad_config.xml.
+-->
+<resources>
+    <string name="app_name">Text To Speech</string>
+    <string name="category">Text</string>
+    <string name="play_button">Play</string>
+</resources>
