@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PRODUCTION AdMob configuration for Text To Speech
+    Publisher: ca-app-pub-8223005482588566
+
+    Source: AdMob console export (admob-ids.csv).
+    App entry: "Text To Speech" / package letshangllc.texttospeech
+    (NOT the other "Text To Speech" or Amazon Appstore entries).
+
+    Debug builds override these with Google's official test IDs via
+    app/src/debug/res/values/ad_config.xml
+-->
+<resources>
+    <!-- AdMob Application ID (~7051735934) -->
+    <string name="admob_app_id">ca-app-pub-8223005482588566~7051735934</string>
+
+    <!-- MainActivity banner ← AdMob unit "Banner ad" -->
+    <string name="admob_banner_unit_id">ca-app-pub-8223005482588566/8528469130</string>
+
+    <!-- Legacy alias used by MainActivity -->
+    <string name="admob_id">@string/admob_banner_unit_id</string>
+
+    <!-- Amazon Ads removed (HTTP / Play policy). Kept as unused stub. -->
+    <string name="amazon_ad_id" translatable="false">REMOVED</string>
+</resources>

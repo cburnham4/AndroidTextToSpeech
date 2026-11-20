@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Banner refresh interval in milliseconds.
+    Legacy integers.xml is gitignored; AdMob also auto-refreshes banners.
+-->
+<resources>
+    <integer name="ad_refresh_rate">60000</integer>
+</resources>
